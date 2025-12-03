@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja da Maria Silva</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif; }
+        body { background-color: #ffe6f0; color: #4b2e2e; display:flex; flex-direction:column; min-height:100vh; }
+        header { background-color: #ff99cc; padding: 10px 20px; position: sticky; top:0; z-index:100; display:flex; align-items:center; justify-content:space-between; }
+        header img { height:50px; border-radius:10px; }
+        nav a { margin-left:20px; text-decoration: none; color: #4b2e2e; font-weight: bold; }
+        nav a:hover { text-decoration: underline; }
+
+        section { padding: 40px 20px; flex:1; }
+        h2 { margin-bottom: 20px; text-align: center; }
+
+        /* Carrossel */
+        #carrossel-container { max-width:800px; margin: 0 auto; overflow: hidden; border-radius:15px; border: 2px solid #ff99cc; box-shadow: 0 5px 15px rgba(255,102,170,0.3); }
+        #carrossel { display: flex; transition: transform 0.5s ease; }
+        #carrossel .carrossel-item { width:100%; flex-shrink:0; }
+        #carrossel img { width:100%; display:block; height: auto; }
+
+        /* Catálogo */
+        .catalogo { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+            gap: 20px; 
+            justify-items: center; 
+            margin-top: 30px;
+        }
+        .produto { 
+            background-color: #fff0f5; 
+            border: 2px solid #ff99cc; 
+            border-radius: 10px; 
+            width: 100%; 
+            max-width: 220px; 
+            text-align: center; 
+            padding: 15px; 
+            transition: transform 0.2s, box-shadow 0.2s; 
+        }
+        .produto:hover { transform: scale(1.05); box-shadow: 0px 5px 15px rgba(255,102,170,0.5); }
+        .produto img { width: 100%; height:auto; border-radius:8px; margin-bottom:10px; }
+        .produto h4 { margin-bottom:5px; }
+        .produto p { margin-bottom:10px; font-weight:bold; color:#ff66aa; } /* Cor destacada para preço */
+
+        /* Formulário de pedidos estilizado */
+        #pedidos { 
+            margin-top:40px; 
+            max-width:500px; 
+            margin-left:auto; 
+            margin-right:auto; 
+            background-color: #fff0f5; 
+            border: 2px solid #ff99cc; 
+            border-radius: 15px; 
+            padding: 25px; 
+            box-shadow: 0px 5px 15px rgba(255,102,170,0.4);
+        }
+        
+        #pedidos h3 { text-align:center; margin-bottom:20px; color:#4b2e2e; }
+        input, textarea, select { 
+            padding:10px; 
+            width:100%; 
+            margin:5px 0 15px; 
+            border-radius:8px; 
+            border:1px solid #ff99cc; 
+            font-size: 1rem;
+        }
+        
+        /* Botão Enviar Pedido */
+        button#enviarPedido { 
+            background-color:#ff99cc; 
+            color:#4b2e2e; 
+            padding:12px 25px; 
+            border:none; 
+            border-radius:8px; 
+            cursor:pointer; 
+            font-weight:bold; 
+            transition: background-color 0.2s, transform 0.2s;
+            width: 100%; /* Ocupa a largura total */
+        }
+        button#enviarPedido:hover { 
+            background-color:#ff66aa; 
+            transform: scale(1.03);
+        }
+        
+        #pedidos ul { list-style:none; margin-top:15px; max-height:200px; overflow-y:auto; }
+        #pedidos li { 
+            background-color:#ffe6f0; 
+            border:1px solid #ff99cc; 
+            margin:5px 0; 
+            padding:8px; 
+            border-radius:5px;
+            /* Estilo para dispor o conteúdo lado a lado dentro da <li> */
+            display: flex;
+            flex-wrap: wrap; /* Permite quebrar linha em telas menores */
+            justify-content: space-between;
+            line-height: 1.4;
+            font-size: 0.9em;
+        }
+        #pedidos li strong {
+            display: block;
+            flex-basis: 100%; /* Faz o título (Nome e Data) ocupar a linha inteira */
+            margin-bottom: 3px;
+            font-size: 1em;
+            color: #ff66aa;
+        }
+        #pedidos li span {
+            /* Faz o conteúdo do pedido se alinhar lado a lado */
+            margin-right: 10px;
+        }
+        #pedidos li .msg {
+            flex-basis: 100%; /* Faz a mensagem ir para a próxima linha */
+            font-style: italic;
+            color: #777;
+            margin-top: 5px;
+        }
+
+
+        /* Avaliações e Rodapé mantidos */
+        .avaliacoes { max-width:600px; margin:0 auto; margin-top:40px; }
+        .avaliacao { background-color:#fff0f5; border:2px solid #ff99cc; border-radius:10px; padding:10px; margin-bottom:10px; }
+        footer { background-color: #ff99cc; color: #4b2e2e; padding: 30px 20px; text-align: center; }
+        footer p, footer a { margin:5px 0; display:block; color: #4b2e2e; text-decoration:none; }
+        .whatsapp-button { position: fixed; bottom: 20px; right: 20px; background-color: #25d366; color: white; padding: 15px; border-radius: 50%; text-align: center; font-size: 24px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); z-index: 1000; cursor: pointer; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="https://storage.googleapis.com/gemini-generations/image_1f72740a-9d2a-43e8-8e68-7c800b4625b5_0.png" alt="Logo Loja da Maria">
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#catalogo">Catálogo</a>
+            <a href="#avaliacoes">Avaliações</a>
+            <a href="#pedidos">Pedidos</a>
+        </nav>
+    </header>
+
+    <section id="home">
+        <div id="carrossel-container">
+            <div id="carrossel">
+                <div class="carrossel-item"><img src="https://storage.googleapis.com/gemini-generations/image_8c72477c-72e2-4752-b883-9b7e779a5286_0.png" alt="Bolo de Chocolate"></div>
+                <div class="carrossel-item"><img src="https://storage.googleapis.com/gemini-generations/image_380b9101-1e96-48c5-9275-c967677f5255_0.png" alt="Cupcake de Morango"></div>
+                <div class="carrossel-item"><img src="https://storage.googleapis.com/gemini-generations/image_645a2717-36e7-494b-a9b0-95b6c3104677_0.png" alt="Brigadeiro Gourmet"></div>
+                <div class="carrossel-item"><img src="https://storage.googleapis.com/gemini-generations/image_54a3901b-5e6f-477d-815d-8380e922e431_0.png" alt="Torta de Limão"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="catalogo">
+        <h2>Catálogo de Produtos</h2>
+        <div class="catalogo" id="catalogoProdutos"></div>
+
+        <div id="pedidos">
+            <h3>Faça seu pedido</h3>
+            <input type="text" id="nome" placeholder="Seu nome" required>
+            <select id="produto">
+                <option value="">Selecione o produto</option>
+            </select>
+            <input type="number" id="quantidade" placeholder="Quantidade" min="1" required>
+            <textarea id="mensagem" placeholder="Mensagem adicional"></textarea>
+            
+            <button id="enviarPedido">Enviar Pedido</button>
+
+            <ul id="listaPedidos"></ul>
+        </div>
+    </section>
+
+    <section id="avaliacoes">
+        <h2>Avaliações</h2>
+        <div class="avaliacoes" id="listaAvaliacoes">
+            <div class="avaliacao">⭐ "Ótimo atendimento e produtos de qualidade!" - Ana</div>
+            <div class="avaliacao">⭐⭐⭐⭐⭐ "Entrega rápida, recomendo! O bolo de chocolate é perfeito!" - João</div>
+            <div class="avaliacao">⭐⭐⭐⭐ "Os cupcakes são lindos, fizeram sucesso na festa!" - Carla</div>
+        </div>
+    </section>
+
+    <footer>
+        <h3>Contato & Redes Sociais</h3>
+        <p>Endereço: Rua Fictícia, 123 - Bairro Central, Cidade Exemplo</p>
+        <p>Email: contato@lojamaria.com | suporte@lojamaria.com</p>
+        <div class="redes">
+            <a href="https://www.facebook.com" target="_blank">Facebook</a>
+            <a href="https://www.instagram.com" target="_blank">Instagram</a>
+            <a href="https://wa.me/5511999999999" target="_blank">WhatsApp</a>
+        </div>
+        <p style="margin-top: 15px; font-size: 0.8em;">© 2024 Maria Silva Confeitaria Artesanal</p>
+    </footer>
+    
+    <a href="https://wa.me/5511999999999?text=Ol%C3%A1%2C%20gostaria%20de%20fazer%20um%20pedido!" target="_blank" class="whatsapp-button">
+        📞
+    </a>
+
+    <script>
+        // --- PRODUTOS E CONFIGURAÇÃO ---
+        const produtos = [
+            { nome: "Bolo de Chocolate", preco: 120.00, precoDisplay: "R$120,00 (kg)", img: "https://storage.googleapis.com/gemini-generations/image_1d671891-b996-41ce-8339-a7afb0386766_0.png" },
+            { nome: "Cupcake de Morango", preco: 8.00, precoDisplay: "R$8,00 (un)", img: "https://storage.googleapis.com/gemini-generations/image_49e81d7f-c1f3-424a-9e19-58b273760431_0.png" },
+            { nome: "Brigadeiro Gourmet", preco: 3.50, precoDisplay: "R$3,50 (un)", img: "https://storage.googleapis.com/gemini-generations/image_986c7595-574d-4560-a29d-473d092d6e07_0.png" },
+            { nome: "Torta de Limão", preco: 85.00, precoDisplay: "R$85,00 (un)", img: "https://storage.googleapis.com/gemini-generations/image_d517c240-276c-4f9e-a0e2-6364024467d3_0.png" }
+        ];
+
+        const pedidosDB = []; // Banco de dados fictício (log)
+
+        // --- FUNÇÕES DE INTERAÇÃO DO USUÁRIO ---
+        
+        document.getElementById('enviarPedido').addEventListener('click', () => {
+            const nome = document.getElementById('nome').value.trim();
+            const produtoNome = document.getElementById('produto').value;
+            const quantidade = document.getElementById('quantidade').value;
+            const mensagem = document.getElementById('mensagem').value.trim();
+            
+            // Validação
+            if (!nome || !produtoNome || !quantidade) {
+                alert("Por favor, preencha seu nome, selecione o produto e a quantidade.");
+                return;
+            }
+            if (parseInt(quantidade) <= 0 || !quantidade) {
+                 alert("A quantidade deve ser de pelo menos 1.");
+                 return;
+             }
+
+            // Encontra o preço do produto selecionado
+            const produtoSelecionado = produtos.find(p => p.nome === produtoNome);
+            const preco = produtoSelecionado ? produtoSelecionado.preco : 0;
+            const total = (preco * parseInt(quantidade)).toFixed(2).replace('.', ',');
+
+
+            const pedido = { nome, produto: produtoNome, quantidade, mensagem, total, data: new Date().toLocaleDateString() };
+            pedidosDB.push(pedido);
+
+            // 1. MOSTRA O NOME DO CLIENTE NO ALERTA
+            alert(`✅ Pedido de ${nome} enviado com sucesso! 
+            ${quantidade}x ${produtoNome} (Total: R$${total}) registrado. Maria entrará em contato.`);
+
+            // 2. MOSTRA NO LOG COMPLETO (Modificado aqui)
+            const li = document.createElement('li');
+            
+            let htmlContent = `<strong>${pedido.nome}</strong> (${pedido.data})`;
+            htmlContent += `<span>Produto: ${pedido.produto}</span>`;
+            htmlContent += `<span>Qtd: ${pedido.quantidade}</span>`;
+            htmlContent += `<span>Total: R$${pedido.total}</span>`;
+            
+            if (pedido.mensagem) {
+                htmlContent += `<span class="msg">Mensagem: "${pedido.mensagem}"</span>`;
+            }
+
+            li.innerHTML = htmlContent;
+            document.getElementById('listaPedidos').prepend(li); // Adiciona no topo
+
+            // Limpa formulário
+            document.getElementById('nome').value = nome; // Mantém o nome preenchido para o próximo pedido
+            document.getElementById('produto').value = '';
+            document.getElementById('quantidade').value = '1';
+            document.getElementById('mensagem').value = '';
+        });
+
+        // --- INICIALIZAÇÃO ---
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const catalogoDiv = document.getElementById('catalogoProdutos');
+            const selectProduto = document.getElementById('produto');
+
+            produtos.forEach(produto => {
+                // RENDERIZAÇÃO DO CATÁLOGO
+                const div = document.createElement('div');
+                div.className = 'produto';
+                div.innerHTML = `
+                    <img src="${produto.img}" alt="${produto.nome}">
+                    <h4>${produto.nome}</h4>
+                    <p>${produto.precoDisplay}</p>
+                `;
+                catalogoDiv.appendChild(div);
+
+                // PREENCHE O SELECT DO FORMULÁRIO
+                const option = document.createElement('option');
+                option.value = produto.nome;
+                option.textContent = `${produto.nome} (${produto.precoDisplay})`;
+                selectProduto.appendChild(option);
+            });
+            
+            // Inicializa o carrossel
+            const carrosselContainer = document.getElementById('carrossel');
+            const carrosselItems = carrosselContainer.querySelectorAll('.carrossel-item');
+            let index = 0;
+            carrosselContainer.style.width = `${carrosselItems.length * 100}%`;
+
+            setInterval(() => {
+                index = (index + 1) % carrosselItems.length;
+                const offset = -index * (100 / carrosselItems.length);
+                carrosselContainer.style.transform = `translateX(${offset}%)`;
+            }, 3000);
+        });
+    </script>
+
+</body>
+</html>
