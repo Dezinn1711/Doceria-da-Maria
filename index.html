@@ -132,8 +132,8 @@
         <nav>
             <a href="#home">Home</a>
             <a href="#catalogo">Catálogo</a>
-            <a href="#avaliacoes">Avaliações</a>
             <a href="#pedidos">Pedidos</a>
+            <a href="#avaliacoes">Avaliações</a>
         </nav>
     </header>
 
@@ -234,7 +234,7 @@
             alert(`✅ Pedido de ${nome} enviado com sucesso! 
             ${quantidade}x ${produtoNome} (Total: R$${total}) registrado. Maria entrará em contato.`);
 
-            // 2. MOSTRA NO LOG COMPLETO (Modificado aqui)
+            // 2. MOSTRA NO LOG COMPLETO
             const li = document.createElement('li');
             
             let htmlContent = `<strong>${pedido.nome}</strong> (${pedido.data})`;
